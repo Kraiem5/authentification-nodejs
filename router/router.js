@@ -1,7 +1,8 @@
 const express = require('express')
 const router = express.Router()
-const { registerUser, loginUser, getUser, sendForgetPasswordEmail, getPasswordLink, updatePassword } = require('../controllers/user.controller')
+const { registerUser, loginUser, getUser, sendForgetPasswordEmail, getPasswordLink, updatePassword, getUserPofile } = require('../controllers/user.controller')
 const auth = require('../middlewares/auth')
+const protect = require('../middlewares/auth.midd')
 const { loginValidation } = require('../controllers/userValidation/login.Validation')
 const { registerValidation } = require('../controllers/userValidation/register.Validation')
 
@@ -11,6 +12,10 @@ router.post('/sign-up', registerValidation, registerUser)
 router.post('/sign-in', loginValidation, loginUser)
 //get
 router.get('/', auth, getUser)
+//get profile
+router.get('/profile', protect, getUserPofile)
+//modifier profile
+router.put('/profile/:id', protect, getUserPofile)
 // send email recovery
 router.post('/reset-password', sendForgetPasswordEmail)
 // get token

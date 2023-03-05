@@ -14,11 +14,13 @@ module.exports = (req, res, next) => {
   }
 
   try {
+
     // feefefefefe => cle jwt 
-    const decryptedToken = verify(token,"feefefefefe" )
+    const decryptedToken = verify(token, "feefefefefe")
+    console.log("azer");
     req.user = decryptedToken.user
     next()
   } catch (er) {
-    res.status(401).json({ msg: 'Token not found or invalid! Access denied' })
+    res.status(401).json({ msg: 'Token nottt found or invalid! Access denied' })
   }
 }

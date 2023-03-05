@@ -32,6 +32,7 @@ const registerUser = async (req, res) => {
         // save new user
         await user.save()
         // implement jwt
+
         // const payload ={
         //     user :{
         //         id: user.id
@@ -93,6 +94,7 @@ const loginUser = async (req, res) => {
 const getUser = async (req, res) => {
     try {
         const user = await User.findOne({ _id: req.user.id })
+        console.log(user);
         res.json(user)
     } catch (error) {
         console.error('fff', error.message)
@@ -158,4 +160,50 @@ const updatePassword = async (req, res) => {
         //   })
     }
 }
-module.exports = { registerUser, getUser, loginUser, sendForgetPasswordEmail, updatePassword }
+
+//***********get user */
+const getUserPofile = async (req, res) => {
+    const user = await User.findById(req.user._id);
+    // const { cin, specialite } = req.body
+    // const cv = req.file.cv || ''
+    // const image = req.file.image || gravatar.url(email, { s: '200', r: 'pg', d: '404' })
+    if (user) {
+        res.json({
+            user: req.user.id,
+            // nom: req.user.nom,
+            // cin: req.body.cin,
+            // specialite: req.body.specialite,
+            // image: image,
+            // cv: cv
+        })
+    } else {
+        res.status(404).json({
+            succes: false,
+            msg: 'user not found'
+        })
+    }
+}
+
+const updateProfile = async (req, res) => {
+    const user = await User.findById(req.header._id)
+
+    if (user) {
+        user.nom = nom || user.nom;
+        user.prenom = prenom || user.prenom;
+        user.email = email || user.email;
+        user.profile.cin = cin || user.profile.cin;
+        user.profile.photo = photo || user.profile.photo;
+        user.profile.specialite = specialite || user.profile.specialite;
+
+        await user.save();
+        res.json(user);
+
+    }
+    if (!user) {
+        return res.status(404).json({ msg: 'User not found' });
+    }
+
+}
+
+
+module.exports = { registerUser, getUser, loginUser, sendForgetPasswordEmail, updatePassword, getUserPofile }

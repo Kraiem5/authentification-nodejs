@@ -12,16 +12,16 @@ module.exports.sendEmail = async (email, token) => {
 
     const transporter = nodemailer.createTransport(smtpTransport({
       host: 'smtp.gmail.com',
-      port: 465,
+      port: 535,
       secure: true,
       auth: {
-        user: 'benfoulen119@gmail.com',
-        pass: 'wbfsgwxqqopahulj'
+        user: 'benfoulen240@gmail.com',
+        pass: 'flenazerty123'
       }
     }));
 
     var mailOptions = {
-      from: 'benfoulen119@gmail.com',
+      from: 'benfoulen240@gmail.com',
       to: email,
       subject: 'message de test ',
       html: "<b> salut</b>" +
