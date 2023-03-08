@@ -26,11 +26,11 @@ const registerUser = async (req, res) => {
             return res.json({ msg: "utilisateur déja existe" })
         }
         // else define new user
-        user = new User({
+        const newUser = new User({
             nom, prenom, email, password, role
         })
         // save new user
-        await user.save()
+        await newUser.save()
         // implement jwt
 
         // const payload ={
@@ -77,7 +77,7 @@ const loginUser = async (req, res) => {
 
         const payload = {
             user: {
-                id: user.id
+                id: user._id
             }
         }
 
@@ -163,18 +163,17 @@ const updatePassword = async (req, res) => {
 
 //***********get user */
 const getUserPofile = async (req, res) => {
-    const user = await User.findById(req.user._id);
+   try {
+    console.log(req.user,req.body)
+    const user = await User.findById(req.user.id);
     // const { cin, specialite } = req.body
     // const cv = req.file.cv || ''
     // const image = req.file.image || gravatar.url(email, { s: '200', r: 'pg', d: '404' })
     if (user) {
+        const result = await User.findByIdAndUpdate(req.user.id,{$set:req.body})
         res.json({
-            user: req.user.id,
-            // nom: req.user.nom,
-            // cin: req.body.cin,
-            // specialite: req.body.specialite,
-            // image: image,
-            // cv: cv
+           status:true,
+           result:result
         })
     } else {
         res.status(404).json({
@@ -182,6 +181,9 @@ const getUserPofile = async (req, res) => {
             msg: 'user not found'
         })
     }
+   } catch (error) {
+    console.log("update profile",error)
+   }
 }
 
 const updateProfile = async (req, res) => {

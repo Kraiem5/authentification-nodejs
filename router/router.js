@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 const { registerUser, loginUser, getUser, sendForgetPasswordEmail, getPasswordLink, updatePassword, getUserPofile } = require('../controllers/user.controller')
 const auth = require('../middlewares/auth')
-const protect = require('../middlewares/auth.midd')
+// const protect = require('../middlewares/auth.midd')
 const { loginValidation } = require('../controllers/userValidation/login.Validation')
 const { registerValidation } = require('../controllers/userValidation/register.Validation')
 
@@ -13,9 +13,9 @@ router.post('/sign-in', loginValidation, loginUser)
 //get
 router.get('/', auth, getUser)
 //get profile
-router.get('/profile', protect, getUserPofile)
+router.get('/profile', auth, getUserPofile)
 //modifier profile
-router.put('/profile/:id', protect, getUserPofile)
+router.put('/profile', auth, getUserPofile)
 // send email recovery
 router.post('/reset-password', sendForgetPasswordEmail)
 // get token
