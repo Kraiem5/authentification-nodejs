@@ -1,11 +1,14 @@
 require("dotenv").config()
-const { verify } = require('jsonwebtoken')
+const {verifToken} =  require('../utils/generateToken')
+const jwt = require('jsonwebtoken')
 
-module.exports = (req, res, next) => {
+module.exports = async (req, res, next) => {
   // ---get token from request header---
   // x-auth-token => cle => mettez dans postman ,, value => token
+  try {
   const token = req.header('x-auth-token')
-
+    console.log(token,req.header)
+    
   // ---check whether token exists---
   if (!token) {
     return res
@@ -13,14 +16,16 @@ module.exports = (req, res, next) => {
       .json({ msg: 'Token not found or invalid! Access denied' })
   }
 
-  try {
+ 
 
     // feefefefefe => cle jwt 
-    const decryptedToken = verify(token, "feefefefefe")
-    console.log("azer");
+    const decryptedToken = await jwt.verify(token, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN })
+
+    console.log("decryptedToken",decryptedToken);
     req.user = decryptedToken.user
     next()
   } catch (er) {
-    res.status(401).json({ msg: 'Token nottt found or invalid! Access denied' })
+    console.log(er)
+    res.status(400).json({ msg: 'Token nottt found or invalid! Access denied' })
   }
 }
