@@ -162,50 +162,59 @@ const updatePassword = async (req, res) => {
 }
 
 //***********get user */
+const editUserPofile = async (req, res) => {
+    try {
+        console.log(req.user, req.body)
+        const user = await User.findById(req.user.id);
+        // const { cin, specialite } = req.body
+        // const cv = req.file.cv || ''
+        // const image = req.file.image || gravatar.url(email, { s: '200', r: 'pg', d: '404' })
+        if (user) {
+            const result = await User.findByIdAndUpdate(req.user.id, { $set: req.body })
+            res.json({
+                status: true,
+                result: result
+            })
+        } else {
+            res.status(404).json({
+                succes: false,
+                msg: 'user not found'
+            })
+        }
+    } catch (error) {
+        console.log("update profile", error)
+    }
+}
+
 const getUserPofile = async (req, res) => {
-   try {
-    console.log(req.user,req.body)
-    const user = await User.findById(req.user.id);
-    // const { cin, specialite } = req.body
-    // const cv = req.file.cv || ''
-    // const image = req.file.image || gravatar.url(email, { s: '200', r: 'pg', d: '404' })
-    if (user) {
-        const result = await User.findByIdAndUpdate(req.user.id,{$set:req.body})
-        res.json({
-           status:true,
-           result:result
-        })
-    } else {
-        res.status(404).json({
-            succes: false,
-            msg: 'user not found'
-        })
+    try {
+        console.log(req.user, req.body)
+        const user = await User.findById(req.user.id);
+
+        if (user) {
+            return res.json({
+                status: true,
+                result: user
+            })
+        }
+
+        else {
+            res.status(404).send({
+                status: false,
+                msg: 'user not found'
+            })
+        }
+
+    } catch (error) {
+        console.log("update profile", error)
     }
-   } catch (error) {
-    console.log("update profile",error)
-   }
 }
 
-const updateProfile = async (req, res) => {
-    const user = await User.findById(req.header._id)
-
-    if (user) {
-        user.nom = nom || user.nom;
-        user.prenom = prenom || user.prenom;
-        user.email = email || user.email;
-        user.profile.cin = cin || user.profile.cin;
-        user.profile.photo = photo || user.profile.photo;
-        user.profile.specialite = specialite || user.profile.specialite;
-
-        await user.save();
-        res.json(user);
-
-    }
-    if (!user) {
-        return res.status(404).json({ msg: 'User not found' });
-    }
-
+function logout(req, res) {
+    req.logout(); // This line logs out the current user
+    res.redirect('/'); // Redirect the user to the homepage
 }
 
 
-module.exports = { registerUser, getUser, loginUser, sendForgetPasswordEmail, updatePassword, getUserPofile }
+
+module.exports = { registerUser, getUser, loginUser, sendForgetPasswordEmail, updatePassword, getUserPofile, editUserPofile }

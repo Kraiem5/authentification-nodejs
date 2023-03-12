@@ -30,7 +30,14 @@ const userSchema = new mongoose.Schema({
     },
     avatar: {
         type: String,
-    }
+    },
+    cin: {
+        type: String,
+    },
+    specialite: {
+        type: String,
+    },
+
 }, { timestamps: true }
 )
 userSchema.pre('save', async function (next) {
