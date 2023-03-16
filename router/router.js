@@ -18,7 +18,8 @@ router.get('/profile', auth, getUserPofile)
 router.put('/profile', auth, editUserPofile)
 // send email recovery
 router.post('/reset-password', sendForgetPasswordEmail)
-router.post('/file')
+router.post('/')
+router.get('/')
 // get token
 //router.get('/reset-password/:token', getPasswordLink)
 // update password

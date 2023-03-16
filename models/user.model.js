@@ -30,7 +30,8 @@ const userSchema = new mongoose.Schema({
     },
     avatar: {
         type: String,
-    },
+    }
+    ,
     cin: {
         type: String,
     },

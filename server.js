@@ -3,6 +3,7 @@ const mongoose = require('mongoose')
 require("dotenv").config()
 const bodyParser = require('body-parser')
 mongoose.set('strictQuery', false)
+const Profile = require('./models/profile.model')
 const cors = require('cors')
 const multer = require('multer');
 const path = require('path')
@@ -53,33 +54,35 @@ const port = process.env.port
 app.listen(port, () => {
     console.log(`connected at ${port}  `);
 })
-// app.get('/', async (req, res) => {
-//     try {
-//         const profiles = await Profile.find({}).exec()
-//         console.log(profiles);
-//         const profil = profiles && profiles.length ? profiles[0] : null
-//         res.render('index', { profil })
+app.get('/', async (req, res) => {
+    try {
+        const profiles = await Profile.find({}).exec()
+        console.log(profiles);
+        const profil = profiles && profiles.length ? profiles[0] : null
+        res.render('index', { profil })
 
-//     } catch (error) {
-//         console.log(error);
-//     }
-// })
+    } catch (error) {
+        console.log(error);
+    }
+})
 
 
-// app.post('/file', upload.single('avatar'), async (req, res) => {
-//     // console.log(util.inspect(req.body, { compact: false, depth: 5, breakLength: 80, colors: true }));
-//     // console.log(util.inspect(req.file, { compact: false, depth: 5, breakLength: 80, colors: true }));
+app.post('/', upload.single('avatar'), async (req, res) => {
+    // console.log(util.inspect(req.body, { compact: false, depth: 5, breakLength: 80, colors: true }));
+    // console.log(util.inspect(req.file, { compact: false, depth: 5, breakLength: 80, colors: true }));
 
-//     try {
-//         const newProfile = new Profile({
-//             avatar: req.file.filename
-//         })
-//         const savedProfile = await newProfile.save()
-//         res.redirect('/')
-//     } catch (error) {
-//         console.log(error);
-//     }
-// })
+    try {
+        const newProfile = new Profile({
+            avatar: req.file.filename
+        })
+        const savedProfile = await newProfile.save()
+        const imageUrl = `${req.protocol}://${req.get('host')}/${req.file.filename}`; // créer une URL complète pour l'image
+        res.json({ url: imageUrl });
+        res.redirect('/')
+    } catch (error) {
+        console.log(error);
+    }
+})
 
 app.use((err, req, res, next) => {
     console.log(util.inspect(err, { compact: false, depth: 5, breakLength: 80, colors: true }));
