@@ -6,6 +6,7 @@ const { generateToken, verifToken } = require('../utils/generateToken');
 require("dotenv").config();
 const { sendEmail } = require('../utils/sendPasswordRecoveryMail');
 const { config } = require('dotenv');
+const multer = require('multer');
 
 
 
@@ -151,6 +152,7 @@ const updatePassword = async (req, res) => {
         const salt = await bcrypt.genSalt(12)
         const newpassword = await bcrypt.hash(req.body.password, salt)
         const result = await User.findByIdAndUpdate(verif.user.id, { $set: { password: newpassword } })
+                      .select('-password')   
         console.log(result)
         res.send({ status: true, message: 'passorw updated successfully' })
     } catch (error) {
@@ -171,6 +173,7 @@ const editUserPofile = async (req, res) => {
         // const image = req.file.image || gravatar.url(email, { s: '200', r: 'pg', d: '404' })
         if (user) {
             const result = await User.findByIdAndUpdate(req.user.id, { $set: req.body })
+            .select('-password')
             res.json({
                 status: true,
                 result: result
@@ -210,6 +213,57 @@ const getUserPofile = async (req, res) => {
     }
 }
 
+const imagePofile = async (req,res)=>{
+   console.log("req.files",req.file)
+   try {
+    console.log(req.user, req.body)
+    const user = await User.findById(req.user.id);
+    // const { cin, specialite } = req.body
+    // const cv = req.file.cv || ''
+    // const image = req.file.image || gravatar.url(email, { s: '200', r: 'pg', d: '404' })
+    if (user) {
+        const result = await User.findByIdAndUpdate(req.user.id, { $set: {avatar:req.file.filename}})
+                           .select('-password')
+        res.json({
+            status: true,
+            result: result
+        })
+    } else {
+        res.status(404).json({
+            succes: false,
+            msg: 'user not found'
+        })
+    }
+} catch (error) {
+    console.log("update profile", error)
+}
+}
+const saveCv = async (req,res)=>{
+   console.log("req.files",req.file)
+   try {
+    console.log(req.user, req.body)
+    const user = await User.findById(req.user.id);
+    // const { cin, specialite } = req.body
+    // const cv = req.file.cv || ''
+    // const image = req.file.image || gravatar.url(email, { s: '200', r: 'pg', d: '404' })
+    if (user) {
+        const result = await User.findByIdAndUpdate(req.user.id, { $set: {cv:req.file.filename}})
+                           .select('-password')
+        res.json({
+            status: true,
+            result: result
+        })
+    } else {
+        res.status(404).json({
+            succes: false,
+            msg: 'user not found'
+        })
+    }
+} catch (error) {
+    console.log("update profile", error)
+}
+}
+
 function logout(req, res) {
     req.logout(); // This line logs out the current user
     res.redirect('/'); // Redirect the user to the homepage
@@ -217,4 +271,4 @@ function logout(req, res) {
 
 
 
-module.exports = { registerUser, getUser, loginUser, sendForgetPasswordEmail, updatePassword, getUserPofile, editUserPofile }
+module.exports = { saveCv,imagePofile,registerUser, getUser, loginUser, sendForgetPasswordEmail, updatePassword, getUserPofile, editUserPofile }
